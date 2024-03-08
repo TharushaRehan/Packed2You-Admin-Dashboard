@@ -1,0 +1,55 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1709640468032,
+      "tag": "0000_early_puff_adder",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1709642779685,
+      "tag": "0001_confused_kingpin",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1709644363970,
+      "tag": "0002_broken_colonel_america",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1709782381850,
+      "tag": "0003_orange_the_leader",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1709784452822,
+      "tag": "0004_many_swordsman",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1709785333228,
+      "tag": "0005_rich_purifiers",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1709785818531,
+      "tag": "0006_burly_redwing",
+      "breakpoints": true
+    }
+  ]
+}
