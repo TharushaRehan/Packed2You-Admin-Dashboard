@@ -2,7 +2,7 @@
 
 import db from "./db";
 import { categories } from "../../../migrations/schema";
-import { Category } from "./types";
+import { Category } from "./supabase.types";
 
 export const CREATE_CATEGORY = async (category: Category) => {
   try {

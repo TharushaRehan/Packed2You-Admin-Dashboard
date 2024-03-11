@@ -1,19 +1,38 @@
 "use client";
 
 import React, { useState } from "react";
-import Logo from "../../../public/Logo.svg";
-import Image from "next/image";
-import { Button, Layout, Menu, MenuProps } from "antd";
 import {
+  PieChartOutlined,
+  UserOutlined,
+  BellOutlined,
+  InfoCircleOutlined,
+  SearchOutlined,
   SettingOutlined,
   MenuOutlined,
   MessageOutlined,
   ShoppingCartOutlined,
   ProductOutlined,
-  PieChartOutlined,
   FireOutlined,
   LogoutOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
+import type { MenuProps } from "antd";
+import {
+  Avatar,
+  Breadcrumb,
+  Button,
+  Input,
+  Layout,
+  Menu,
+  Space,
+  Typography,
+  theme,
+  Tooltip,
+  ConfigProvider,
+  Divider,
+} from "antd";
+import Logo from "../../../public/Logo.svg";
+import Image from "next/image";
 import DashboardComponent from "@/components/dashboard/dashboard";
 import CategoriesComponent from "@/components/dashboard/categories";
 import ProductsComponent from "@/components/dashboard/products";
@@ -21,8 +40,45 @@ import OrdersComponent from "@/components/dashboard/orders";
 import MessagesComponent from "@/components/dashboard/messages";
 import TopDealsComponent from "@/components/dashboard/top-deals";
 import SettingsComponent from "@/components/dashboard/settings";
+import AddCategory from "@/components/dashboard/add-category";
+import AddProduct from "@/components/dashboard/add-product";
 
-// Define type for different content sections
+//
+const { Header, Content, Footer, Sider } = Layout;
+const { Text, Link } = Typography;
+
+type MenuItem = Required<MenuProps>["items"][number];
+
+function getItem(
+  label: React.ReactNode,
+  key: React.Key,
+  icon?: React.ReactNode,
+  children?: MenuItem[]
+): MenuItem {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  } as MenuItem;
+}
+
+const items: MenuItem[] = [
+  getItem("Dashboard", "Dashboard", <MenuOutlined />),
+  getItem("Categories", "sub1", <PieChartOutlined />, [
+    getItem("All Categories", "All Categories"),
+    getItem("Add New Category", "New Category"),
+  ]),
+  getItem("Products", "sub2", <ProductOutlined />, [
+    getItem("All Products", "All Products"),
+    getItem("Add New Product", "New Product"),
+  ]),
+  getItem("Orders", "Orders", <ShoppingCartOutlined />),
+  getItem("Feedbacks", "Feedbacks", <MessageOutlined />),
+  getItem("Top Deals", "Top Deals", <FireOutlined />),
+  getItem("Settings", "Settings", <SettingOutlined />),
+  getItem("Log Out", "Log Out", <LogoutOutlined />),
+];
 interface ContentSection {
   key: string;
   component: React.FC;
@@ -30,17 +86,26 @@ interface ContentSection {
 
 const contentSections: ContentSection[] = [
   // Add more content sections with their components here
-  { key: "dashboard", component: DashboardComponent },
-  { key: "categories", component: CategoriesComponent },
-  { key: "products", component: ProductsComponent },
-  { key: "orders", component: OrdersComponent },
-  { key: "messages", component: MessagesComponent },
-  { key: "topdeals", component: TopDealsComponent },
-  { key: "settings", component: SettingsComponent },
+  { key: "Dashboard", component: DashboardComponent },
+  { key: "All Categories", component: CategoriesComponent },
+  { key: "New Category", component: AddCategory }, // add
+  { key: "All Products", component: ProductsComponent },
+  { key: "New Product", component: AddProduct }, // add
+  { key: "Orders", component: OrdersComponent },
+  { key: "Feedbacks", component: MessagesComponent },
+  { key: "Top Deals", component: TopDealsComponent },
+  { key: "Settings", component: SettingsComponent },
 ];
 
-const DashboardPage: React.FC = () => {
-  const [selectedKey, setSelectedKey] = useState("dashboard");
+//
+
+const Dashboard: React.FC = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
+  const [selectedKey, setSelectedKey] = useState("Dashboard");
 
   const handleMenuClick: MenuProps["onClick"] = (e) => {
     setSelectedKey(e.key); // Access the key property from the MenuInfo object
@@ -54,109 +119,90 @@ const DashboardPage: React.FC = () => {
     return <selectedSection.component />;
   };
 
+  //
   return (
-    <Layout
-      style={{
-        minHeight: "100vh",
-      }}
-    >
-      <Layout.Sider
-        width={250}
-        style={{
-          backgroundColor: "#fff",
-        }}
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+        style={{ background: "#fff" }}
       >
-        <div className="flex flex-col justify-between h-screen pb-10">
-          <div className="flex items-center justify-center py-4">
-            <Image src={Logo} alt="Logo" />
-          </div>
-          <Menu
-            theme="light"
-            mode="inline"
-            defaultSelectedKeys={["dashboard"]}
-            onClick={handleMenuClick}
+        <Image src={Logo} alt="Logo" />
+        <Menu
+          theme="light"
+          defaultSelectedKeys={["Dashboard"]}
+          mode="inline"
+          items={items}
+          style={{ marginTop: 45 }}
+          onClick={handleMenuClick}
+        />
+      </Sider>
+      <Layout style={{ background: "#F4F7FE" }}>
+        <Header
+          style={{
+            paddingInline: 16,
+            background: "#F4F7FE",
+            alignItems: "center",
+            justifyContent: "space-between",
+            display: "flex",
+            paddingTop: 10,
+          }}
+        >
+          <Text strong style={{ fontSize: 30 }}>
+            Admin Dashboard
+          </Text>
+          <Space
+            size={10}
+            style={{
+              alignItems: "center",
+              display: "flex",
+              justifyContent: "center",
+            }}
           >
-            <Menu.Item
-              key="dashboard"
-              icon={<MenuOutlined />}
-              className="text-lg"
-              style={{ marginBottom: 10 }}
-            >
-              Dashboard
-            </Menu.Item>
-            <Menu.Item
-              key="categories"
-              icon={<PieChartOutlined />}
-              className="text-lg"
-              style={{ marginBottom: 10 }}
-            >
-              Categories
-            </Menu.Item>
-            <Menu.Item
-              key="products"
-              icon={<ProductOutlined />}
-              className="text-lg"
-              style={{ marginBottom: 10 }}
-            >
-              Products
-            </Menu.Item>
-            <Menu.Item
-              key="orders"
-              icon={<ShoppingCartOutlined />}
-              className="text-lg"
-              style={{ marginBottom: 10 }}
-            >
-              Orders
-            </Menu.Item>
-            <Menu.Item
-              key="messages"
-              icon={<MessageOutlined />}
-              className="text-lg"
-              style={{ marginBottom: 10 }}
-            >
-              Messages
-            </Menu.Item>
-            <Menu.Item
-              key="topdeals"
-              icon={<FireOutlined />}
-              className="text-lg"
-              style={{ marginBottom: 10 }}
-            >
-              Top Deals
-            </Menu.Item>
-            <Menu.Item
-              key="settings"
-              icon={<SettingOutlined />}
-              className="text-lg"
-            >
-              Settings
-            </Menu.Item>
-            {/* Add more menu items for different content sections */}
-          </Menu>
-          <div className="flex items-center justify-center py-4">
-            <Button
-              type="primary"
-              danger
-              icon={<LogoutOutlined />}
+            <Input
+              placeholder="Search"
+              type="text"
+              prefix={<SearchOutlined style={{ marginRight: 5 }} />}
               size="large"
-            >
-              Log Out
-            </Button>
-          </div>
-        </div>
-      </Layout.Sider>
-      <Layout.Content style={{ padding: 24, margin: 0 }}>
-        {renderContent()}
-      </Layout.Content>
+              style={{ borderRadius: 16 }}
+            />
+            <Button icon={<BellOutlined />} size="large" />
+            <Button icon={<InfoCircleOutlined />} size="large" />
+            <Tooltip title="Admin" placement="top">
+              <Avatar
+                style={{ backgroundColor: "#87d068", marginTop: -4 }}
+                icon={<UserOutlined />}
+                size={"large"}
+              />
+            </Tooltip>
+          </Space>
+        </Header>
+        <Divider />
+        <Content
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            paddingLeft: 20,
+            paddingRight: 20,
+            gap: 20,
+          }}
+        >
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              <HomeOutlined />
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Typography.Text>
+                <Text strong>{selectedKey}</Text>
+              </Typography.Text>
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          {renderContent()}
+        </Content>
+      </Layout>
     </Layout>
-    //<DashboardLayout>{renderContent()}</DashboardLayout>
-    // <div className="flex">
-    //   <Sidebar />
-    //   <div>
-    //     <p>Dashboard</p>
-    //   </div>
-    // </div>
   );
 };
 
-export default DashboardPage;
+export default Dashboard;
