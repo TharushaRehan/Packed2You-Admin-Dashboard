@@ -188,16 +188,20 @@ const Dashboard: React.FC = () => {
             gap: 20,
           }}
         >
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <HomeOutlined />
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <Typography.Text>
-                <Text strong>{selectedKey}</Text>
-              </Typography.Text>
-            </Breadcrumb.Item>
-          </Breadcrumb>
+          <Breadcrumb
+            items={[
+              {
+                title: <HomeOutlined />,
+              },
+              {
+                title: (
+                  <Typography.Text>
+                    <Text strong>{selectedKey}</Text>
+                  </Typography.Text>
+                ),
+              },
+            ]}
+          ></Breadcrumb>
           {renderContent()}
         </Content>
       </Layout>

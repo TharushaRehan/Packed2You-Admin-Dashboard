@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-//import db from "@/lib/supabase/db";
+import db from "@/lib/supabase/db";
 
 const inter = Poppins({ subsets: ["latin"], weight: ["400"] });
 
@@ -16,7 +16,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  //console.log(db);
+  console.log(db);
   return (
     <html lang="en">
       <body className={inter.className}>

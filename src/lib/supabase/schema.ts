@@ -1,5 +1,7 @@
 import {
+  boolean,
   integer,
+  json,
   jsonb,
   pgTable,
   text,
@@ -7,15 +9,29 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-export const categories = pgTable("categories", {
+export const users = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "string",
   }),
-  categoryName: text("category_name").notNull(),
-  iconId: text("icon_id").notNull(),
-  noOfProducts: integer("no_of_products").notNull(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  billingDetails: json("billing_details").default({
+    properties: {
+      firstName: text("first_name"),
+      lastName: text("last_name"),
+      companyName: text("company_name"),
+      streetAddress: text("street_address"),
+      country: text("country"),
+      states: text("states"),
+      zipcode: integer("zip_code"),
+      email: text("email"),
+      phone: text("phone"),
+    },
+  }),
 });
 
 export const products = pgTable("products", {
@@ -39,6 +55,8 @@ export const products = pgTable("products", {
   customerFeedback: text("feedbacks").array(),
   rating: integer("rating").notNull(),
   tags: text("tags").array().notNull(),
+  isOnSale: boolean("on_sale"),
+  salePercentage: integer("sale_percentage"),
 });
 
 export const orders = pgTable("orders", {
