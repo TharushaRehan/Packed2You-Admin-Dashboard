@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Button, Input } from "antd";
 import { actionLoginUser } from "../lib/sever-actions/auth-actions";
 import { useRouter } from "next/navigation";
+import { CHECK_ADMIN } from "@/lib/supabase/queries";
 
 const Home = () => {
   const [email, setEmail] = useState("");
@@ -14,23 +15,36 @@ const Home = () => {
   const router = useRouter();
 
   const handleLogIn = async () => {
-    router.replace("/dashboard");
+    //router.replace("/dashboard");
 
-    // if (email && password) {
-    //   const { error } = await actionLoginUser(email, password);
+    if (email && password) {
+      const { data, error } = await CHECK_ADMIN(email);
 
-    //   if (error) {
-    //     setError(error.message);
-    //   } else {
-    //     router.replace("/dashboard");
-    //   }
+      console.log(data);
 
-    //   // if (data) {
-    //   //   console.log(data);
-    //   // }
-    // } else {
-    //   setError("Please enter email and password.");
-    // }
+      if (error) {
+        setError(error.toString());
+        return;
+      }
+
+      if (data?.length !== 0) {
+        const { data, error } = await actionLoginUser(email, password);
+
+        if (error) {
+          setError(error.message);
+        } else {
+          router.replace("/dashboard");
+        }
+
+        if (data) {
+          console.log(data);
+        }
+      } else {
+        setError("No user found with this email.");
+      }
+    } else {
+      setError("Please enter email and password.");
+    }
   };
 
   //

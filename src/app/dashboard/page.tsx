@@ -28,7 +28,6 @@ import {
   Typography,
   theme,
   Tooltip,
-  ConfigProvider,
   Divider,
 } from "antd";
 import Logo from "../../../public/Logo.svg";
@@ -101,9 +100,6 @@ const contentSections: ContentSection[] = [
 
 const Dashboard: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
 
   const [selectedKey, setSelectedKey] = useState("Dashboard");
 

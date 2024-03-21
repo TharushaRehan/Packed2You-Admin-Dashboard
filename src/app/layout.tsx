@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { ConfigProvider } from "antd";
 import db from "@/lib/supabase/db";
 
 const inter = Poppins({ subsets: ["latin"], weight: ["400"] });
@@ -19,8 +20,14 @@ export default function RootLayout({
   console.log(db);
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <AntdRegistry>{children}</AntdRegistry>
+      <body>
+        <ConfigProvider
+          theme={{
+            token: { fontFamily: "" },
+          }}
+        >
+          <AntdRegistry>{children}</AntdRegistry>
+        </ConfigProvider>
       </body>
     </html>
   );

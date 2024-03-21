@@ -1,13 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Input, message, Typography, Flex } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { ADD_NEW_ADMIN } from "@/lib/supabase/queries";
+import { Admin } from "@/lib/supabase/supabase.types";
 import { actionCreateAdmin } from "@/lib/sever-actions/auth-actions";
 interface AdminFormValues {
   email: string;
   password: string;
+  firstName: string;
+  lastName: string;
 }
+
+const { Text, Title } = Typography;
 
 //
 
@@ -18,37 +24,70 @@ const SettingsComponent = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (values: AdminFormValues) => {
-    const { email, password } = values;
+    const { email, password, firstName, lastName } = values;
 
-    if (!email || !password) return;
+    if (!email || !password || !firstName || !lastName) return;
 
-    // setLoading(true);
-    // const { data, error } = await actionCreateAdmin(email, password);
+    setLoading(true);
 
-    // if (data.user) {
-    //   messageApi.open({
-    //     type: "success",
-    //     content: "Created a new admin",
-    //   });
-    //   setLoading(false);
-    // }
+    const { data, error } = await actionCreateAdmin(email, password);
+    if (error) {
+      messageApi.open({
+        type: "error",
+        content: "Error adding a new admin.",
+      });
+      console.log(error);
+      setLoading(false);
+      return;
+    }
+    if (data) {
+      const uid = data.user?.id;
 
-    // if (error) {
-    //   messageApi.open({
-    //     type: "error",
-    //     content: "Error adding a new admin.",
-    //   });
-    //   console.log(error.message);
-    //   setLoading(false);
-    // }
+      if (!uid) return;
+
+      const newAdmin: Admin = {
+        id: uid,
+        email: email,
+        createdAt: new Date().toISOString(),
+        firstName: firstName,
+        lastName: lastName,
+      };
+
+      try {
+        await ADD_NEW_ADMIN(newAdmin);
+        messageApi.open({
+          type: "success",
+          content: "Created a new admin",
+        });
+        setLoading(false);
+      } catch (error) {
+        messageApi.open({
+          type: "error",
+          content: "Error adding a new admin.",
+        });
+        console.log(error);
+        setLoading(false);
+      }
+    }
   };
   //
   return (
     <div>
       {contextHolder}
-      <p className="text-xl font-bold">Settings</p>
-      <div className="mt-5">
-        <p className="text-base">Add a new admin</p>
+      <Title>Settings</Title>
+      <Flex
+        vertical
+        style={{
+          marginTop: 10,
+          background: "#edf1f5",
+          width: 500,
+          padding: "10px 20px",
+          borderRadius: 16,
+        }}
+      >
+        <Text strong style={{ fontSize: 20 }}>
+          Add a new admin
+        </Text>
         <Form
           form={form}
           onFinish={handleSubmit}
@@ -81,7 +120,7 @@ const SettingsComponent = () => {
             </Button>
           </Form.Item>
         </Form>
-      </div>
+      </Flex>
     </div>
   );
 };

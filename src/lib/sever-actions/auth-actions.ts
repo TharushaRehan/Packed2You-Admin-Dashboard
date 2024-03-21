@@ -2,11 +2,9 @@
 
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { adminAuthClient } from "../supabase/db";
 
 export const actionLoginUser = async (email: string, password: string) => {
   const supabase = createRouteHandlerClient({ cookies });
-
   const response = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -16,10 +14,10 @@ export const actionLoginUser = async (email: string, password: string) => {
 };
 
 export const actionCreateAdmin = async (email: string, password: string) => {
-  const { data, error } = await adminAuthClient.createUser({
+  const supabase = createRouteHandlerClient({ cookies });
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
-    role: "authenticated",
   });
 
   return { data: data, error: error };
